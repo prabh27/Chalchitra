@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!Code and developed by Reminiscence>
+<!Jay Mehta>
+<!Poulami Chakraborty>
+<!Naren Srinivasa Ramanujam>
+<!Anand Tiwari>
+<!Prabh Simran Singh Baweja>
+<html>
+	<head>
+		<title>ChalChitra</title>
+		<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+		<meta name="viper-init-options" content="pictures"/>
+		<meta name="viper-api-version" content="1.0"/>
+		
+		<link rel="icon" type="images/png" href="resources/images/favicon.png" />
+		<link rel="viper-app-icon" type="images/jpeg" href="resources/images/appicon.jpg"/>
+		
+		<link rel="stylesheet" href="../common/css/common.css" type="text/css" charset="utf-8"/>
+		
+		<script type="text/javascript" src="../common/js/jquery-1.5.1.min.js"></script>
+		<script type="text/javascript" src="../common/js/common.js"></script>
+		
+		<link rel="viper-reference-image" id="smile" title="width:0.07m" href="http://s29.postimg.org/arw077kfr/smile_trace.jpg"/>
+		
+		<link rel="viper-reference-image" id="barney" title="width:0.07m" href="http://s28.postimg.org/f72e1nzfx/barney_trace.jpg"/>
+				
+		<link rel="viper-reference-image" id="wolf" title="width:0.07m" href="http://s27.postimg.org/gych6ovtv/wolf_trace.jpg"/>
+
+		<link rel="viper-reference-image" id="beach" title="width:0.07m" href="http://s30.postimg.org/lux3v8apt/beach_trace.jpg"/>
+
+		<link rel="viper-reference-image" id="hi" title="width:0.07m" href="http://s7.postimg.org/i7ttjdgaj/hi_trace.jpg"/>
+		
+		<link rel="viper-reference-image" id="taj" title="width:0.07m" href="http://s30.postimg.org/9cnrpk7r5/taj_trace.jpg"/>
+		
+		<script type="text/javascript">
+			var indicator = null;
+			var lastNode = null;
+			var slideshowState = {};
+			var flag = 0;
+			function onViperReady() {
+				viper.setLoggingEnabled(true);
+				viper.setBrowserBounce(false);
+				viper.setTrackingLostAnimationEnabled(false);
+				viper.setHtmlResolution(6000); // 6000 px per meter, or 1000 px per 16.667 cm
+				
+				var observer = {
+					onMapCreatedWithImage : function(imageId) {
+						var elemId = imageId + "_node";
+						
+						// Show found node, hide the others
+						var nodes = document.getElementsByClassName("node");
+						for (var i in nodes) {
+							var node = nodes[i];
+							if (node.id == elemId) {
+								onNodeFound(node.id);
+								node.style.display = "block";
+							}
+							else {
+								node.style.display = "none";
+							}
+						}
+					},
+					
+					onMapDiscarded : function() {
+						// Map was discarded
+					},
+					
+					onTrackingLost : function() {
+						// Tracking was lost
+						onNodeLost();
+					},
+					
+					onTrackingDisabled : function() {
+						onNodeLost();
+					}
+					
+				}
+				
+				viper.setObserver(observer);
+			}
+			
+			function onAppLoaded() {
+				indicator = document.getElementById("indicator");
+				onStartupInfoDone();
+			}
+			
+			function onNodeLost() {
+				indicator.innerHTML = " ";
+				indicator.className = "hidden";
+			}
+			
+			function onNodeFound(nodeId) {
+				var tmp ="";
+				tmp = "id" + lastNode;
+				lastNode = nodeId;
+
+				
+				indicator.innerHTML = "Found " + nodeId;
+				indicator.className = "visible";
+				viper.log("id"+nodeId);
+
+				if(nodeId == "hi_node" && flag == 0)
+				{
+					tmp = "idcats";
+					flag = 1;
+				}
+				
+				if(tmp == "idcats"){
+						document.getElementById("over").src="resources/images/hi.gif";
+				}else if(nodeId == "hi_node" && tmp == "idtaj_node")
+					{
+						indicator.innerHTML = "overlay";
+						indicator.className = "visible";					
+						document.getElementById("over").src="resources/images/tajoverlap.gif";
+						lastNode="cats";
+				}else if(nodeId == "hi_node" && tmp == "idbeach_node")
+					{
+						indicator.innerHTML = "overlay";
+						indicator.className = "visible";					
+						document.getElementById("over").src="resources/images/beachoverlap.gif";
+						lastNode="cats";
+					}
+			}
+		
+			function onStartupInfoDone() {
+				// This will initiate the SLAM initialization. When a map is created,
+				// onMapCreated in the callback structure will be called.
+				var targetImages = ["hi",
+									"taj",
+									"beach",
+									"wolf",
+									"barney",
+									"smile"
+									];
+				for (var i in targetImages) {
+					var id = targetImages[i];
+					viper.activateReferenceImage(id);
+				}
+				
+				viper.requireRealityMap();
+			}
+			</script>
+		
+		<style type="text/css">
+			
+			.contentnode {
+				position:absolute;
+				-webkit-transform-origin:top left;
+				-webkit-transform-style:preserve-3d;
+				font-family:HelveticaNeue-Light;
+				background-color:rgba(255,255,255,0);
+			}
+
+		</style>
+		
+	</head>
+
+	<body>
+		<div id="viper.world_node" style="display:none;">
+			<div id="viper.scene_node">
+
+				<div id="hi_node" class="node" style="position:absolute;">
+					<div class="contentnode" 
+						style="-webkit-transform:rotateZ(90deg) translateX(-210px) translateY(-115px);">
+						<div id="static">
+							<img id="over" src="resources/images/hi.gif"  />
+						</div>
+					</div>
+				</div>
+
+				<div id="taj_node" class="node" style="position:absolute;">
+					<div class="contentnode" 
+						style="-webkit-transform:rotateZ(90deg) translateX(-210px) translateY(-115px);">
+							<img id="over" src="resources/images/taj.gif" />
+					</div>
+				</div>
+				
+				<div id="beach_node" class="node" style="position:absolute;">
+					<div class="contentnode" 
+						style="-webkit-transform:rotateZ(90deg) translateX(-210px) translateY(-115px);">
+							<img id="over" src="resources/images/beach.gif" />
+					</div>
+				</div>
+				
+				<div id="wolf_node" class="node" style="position:absolute;">
+					<div class="contentnode" 
+						style="-webkit-transform:rotateZ(90deg) translateX(-210px) translateY(-115px);">
+							<img id="over" src="resources/images/wolf.gif" />
+					</div>
+				</div>
+				
+				<div id="barney_node" class="node" style="position:absolute;">
+					<div class="contentnode" 
+						style="-webkit-transform:rotateZ(90deg) translateX(-210px) translateY(-115px);">
+							<img id="over" src="resources/images/barney.gif" style="width: 413px; height:236px;" />
+					</div>
+				</div>
+
+				<div id="smile_node" class="node" style="position:absolute;">
+					<div class="contentnode" 
+						style="-webkit-transform:rotateZ(90deg) translateX(-210px) translateY(-115px);">
+							<img id="over" src="resources/images/smile.gif" />
+					</div>
+				</div>
+
+				
+			</div>
+		</div>
+		
+		<div id="indicator"></div>
+
+	</body>
+</html>
